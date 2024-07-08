@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Easeveg log in</title>
+</head>
+<style>
+
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(to right, #4CAF50, #81C784);
+       
+    }
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        background-color:rgba(245, 245, 220, 0.4);;
+    }
+    .card-header, .card-body {
+        background-color: transparent;
+        border-radius: 15px 15px 0 0;
+
+    }
+    .card-header h3 {
+        margin: 0;
+    }
+    .card-body {
+        border-radius: 0 0 15px 15px;
+    }
+    input{
+        border: #FFF9C4;
+        margin: 5px 5px;
+        border-radius: 5px;
+        width: 90%;
+        padding: 10px;
+    }
+    .btn-dark {
+        background-color: #121212;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+    }
+    .btn-dark:hover {
+        background-color: #23272b;
+    }
+    .form-group {
+        margin-top: 20px;
+    }
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    .card {
+        max-width: 1000px;
+        width: 100%;
+    }
+</style>
+<body>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-12 ">
+                <div class="card shadow rounded">
+                    <div class="card-header">
+                        <h3 class="text-center">
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="104"  height="104"  viewBox="0 0 24 24"  fill="none"  stroke="#121212"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-user-pentagon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M13.163 2.168l8.021 5.828c.694 .504 .984 1.397 .719 2.212l-3.064 9.43a1.978 1.978 0 0 1 -1.881 1.367h-9.916a1.978 1.978 0 0 1 -1.881 -1.367l-3.064 -9.43a1.978 1.978 0 0 1 .719 -2.212l8.021 -5.828a1.978 1.978 0 0 1 2.326 0z" /><path d="M12 13a3 3 0 1 0 0 -6a3 3 0 0 0 0 6z" /><path d="M6 20.703v-.703a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v.707" /></svg>
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <form action="/login" method="POST">
+                            {% csrf_token %}
+                            <label>
+                                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="#121212"  class="icon icon-tabler icons-tabler-filled icon-tabler-user"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 2a5 5 0 1 1 -5 5l.005 -.217a5 5 0 0 1 4.995 -4.783z" /><path d="M14 14a5 5 0 0 1 5 5v1a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-1a5 5 0 0 1 5 -5h4z" /></svg> 
+                            </label>
+                            <!--Login_form: objeto de views que se pasa al template con su campo username que se define en forms-->
+                            {{login_form.username}}
+                            {% if register_form.username.errors %}
+                                <ul class="errors">
+                                    {% for error in register_form.username.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            <label>
+                                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="#121212"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-lock"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z" /><path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" /><path d="M8 11v-4a4 4 0 1 1 8 0v4" /></svg>
+                            </label>
+                            {{login_form.password}}
+                            {% if register_form.password1.errors %}
+                                <ul class="errors">
+                                    {% for error in register_form.password1.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+
+                            <div class="form-group d-flex justify-content-center">
+                                <input type="submit" value="Log in" class="btn btn-dark "> 
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+</body>
+</html>

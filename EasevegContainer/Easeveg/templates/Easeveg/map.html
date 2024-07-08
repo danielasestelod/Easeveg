@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Map</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@4.0.0/dist/geosearch.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <style>
+        #map {
+            height: 100vh;
+        }
+        .btn-favourite{
+            border:none;
+            background:white;
+            margin:0;
+            padding:0;
+            cursor:pointer;
+            margin-left:-16px
+        }
+        #search-container {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            z-index: 1000;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #search-input {
+            padding: 5px;
+            border-radius: 5px;
+            border: none;
+            border-color: black;
+        }
+        #search-button {
+            border-radius: 3px;
+            padding: 7px;
+            border: none;
+            background-color: #d9ef9f;
+        }
+        #btn-route {
+            position: fixed;
+            top: 180px;
+            left: 10px;
+            z-index: 1000;
+            padding: 2px 4px;
+            margin: 2px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            border-color: rgb(199, 199, 199);
+            cursor: pointer;
+        }
+        #btn-favourites{
+            position: fixed;
+            top: 140px;
+            left: 10px;
+            z-index: 1000;
+            padding: 2px 4px;
+            margin: 2px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            border-color: rgb(199, 199, 199);
+            cursor: pointer;
+        }
+        #show-saved-data{
+            position: fixed;
+            top: 220px;
+            left: 10px;
+            z-index: 1000;
+            padding: 2px 4px;
+            margin: 2px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            border-color: rgb(199, 199, 199);
+            cursor: pointer;
+        }
+        .overlay-btn{
+            padding: 5px 5px;
+            margin: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            border-color: rgb(199, 199, 199);
+            cursor: pointer;
+        }
+        #account-btn-group{
+            position: fixed;
+            top: 15px;
+            right: 10px;
+            z-index: 1001;
+            display: flex;
+            justify-content: space-between;
+        }
+        .favourite-elemnt{
+            list-style-type:none;
+            margin:5px;
+        }
+        .name-favourite-elemnt{
+            font-weight : bold ;
+            
+        }
+        .dark-mode {
+            background-color: #202223;
+            color: white;
+        }
+        .dark-mode #btn-route,
+        .dark-mode #btn-favourites,
+        .dark-mode .overlay-btn
+        {
+            background-color: #202223;
+            color: white;
+            border-color: #202223;
+        }
+        .dark-mode li{
+            color:black;
+        }
+        a:visited{
+            color:black;
+        }
+        
+       /* Only the necessary CSS shown */
+
+        :root {
+            --map-tiles-filter: brightness(0.7) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .map-tiles {
+                filter:var(--map-tiles-filter, none);
+                color:black;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <!--Botones de inicio de sesión registro y cerrar sesión según si es usuario esta o no autenticado-->
+    <div id="account-btn-group">
+        {% if not user.is_authenticated %}
+            <a href="/register" class="overlay-btn" title="Sign up">
+                <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-user-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M16 19h6" /><path d="M19 16v6" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4" /></svg>
+            </a>
+            <a href="/login" class="overlay-btn" title="Log in">
+                <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-login"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" /><path d="M21 12h-13l3 -3" /><path d="M11 15l-3 -3" /></svg>
+            </a>
+        {% else %}
+            <a href="/logout" class="overlay-btn" title="Log out">
+                <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-logout"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" /><path d="M9 12h12l-3 -3" /><path d="M18 15l3 -3" /></svg>
+            </a>
+        {% endif %}
+        <button onclick="toggleDarkMode()" class="overlay-btn" title="Toggle dark mode">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-moon-stars">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M12 3c.132 0 .263 .003 .393 .01a9 9 0 1 0 10.607 10.607a5 5 0 1 1 -11 -10.612z" />
+                <path d="M17 4a2 2 0 0 0 0 4a2 2 0 0 0 0 -4z" />
+                <path d="M19 11h2m-1 -1v2" />
+            </svg>
+        </button>
+    </div>
+    <!--Botones para activar la función de crear ruta y visualizar sitios favoritos -->
+    <button id="btn-route" title="See route from your location">
+        <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-map-route"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7l6 -3l6 3l6 -3v13l-6 3l-6 -3l-6 3v-13" /><path d="M9 12v.01" /><path d="M6 13v.01" /><path d="M17 15l-4 -4" /><path d="M13 15l4 -4" /></svg>
+    </button>
+    <button id="btn-favourites" title="Check your favourites">
+        <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-heart"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" /></svg>
+    </button>
+    <!--Modal con sitios favoritos del usuario con Bootstrap para estilo y funcionalidades--> 
+    <div class="modal" tabindex="-1" id="favourites-modal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Your favourite places</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group" id="restaurants-list">
+                    
+                </ul>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-geosearch@4.0.0/dist/geosearch.umd.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css">
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        //Variable con valor mutable según el usuario esté registrado o no
+        let logged_in = {% if user.is_authenticated %} true {% else %} false {% endif %}
+
+        const map=initMap();
+
+        //Función que inicializa el mapa
+        function initMap() {
+            //Crea objeto map de Leaflet y lo asocia un elemnto HTML de id map y con setView lo centra en esas coordenadas con un zoom de 15
+            let map = L.map('map').setView([0, 0], 15);
+            //Crea una capa de OpenStreetMap y la configura
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+
+            }).addTo(map);
+            //Proveedor de búsqueda usando la biblioteca GeoSearch
+            const provider = new window.GeoSearch.OpenStreetMapProvider();
+            //Control de búsqueda de GoSearch usando el proveedor de OpenStreetMap
+            const searchControl = new window.GeoSearch.GeoSearchControl({
+                provider: provider,
+                style: 'button'
+            });
+            //Añade el control de búsqueda
+            map.addControl(searchControl);
+
+            return map;
+        }
+
+        //Crea una lista de objetos restaurants a partir de datos proporcionados por Django
+        const restaurants = [
+            {% for restaurant in restaurants %}
+                {
+                    id:{{restaurant.id}},
+                    name: "{{ restaurant.name}}",
+                    direction: "{{ restaurant.direction }}",
+                    latitude: {{ restaurant.latitude }},
+                    longitude: {{ restaurant.longitude }}
+                },
+            {% endfor %}
+        ];
+
+        // Función para listar los restaurantes favoritos 
+        async function getFavouriteRestaurants(){
+            let response= await fetch("/show_favourites")
+            let restaurants= await response.json() 
+            return restaurants ;
+        }
+
+        //Añade marcadores al mapa y gestiona su funcionalidad de favoritos
+        function addMarkers(map, restaurants) {
+            //Definición de un icono para los sitios que se van a marcar
+            let icon = L.icon({
+                iconUrl: 'https://cdn-icons-png.flaticon.com/128/14988/14988389.png',
+                iconSize: [25, 25],
+                iconAnchor: [12, 12]
+            });
+            //Iterar sobre la lista de sitios
+            restaurants.forEach(place => {
+                //Comprobar si el sitio tiene coordenadas válidas
+                if (place.latitude && place.longitude) { 
+                    //Marcador en el lugar que indican las coordenadas del item de la lista
+                    let marker = L.marker([place.latitude, place.longitude], { icon: icon }).addTo(map);
+                    //Crear un popup al marcador con un botón para marcar favoritos
+                    marker.bindPopup(`
+                    <button class="btn-favourite" data-id=${place.id} title="save as favourite">
+                        <svg width="42" height="42" viewBox="0 0 512 512" style="color:currentColor" xmlns="http://www.w3.org/2000/svg" class="h-full w-full"><rect width="512" height="512" x="0" y="0" rx="30" fill="transparent" stroke="transparent" stroke-width="0" stroke-opacity="100%" paint-order="stroke"></rect><svg width="256px" height="256px" viewBox="0 0 24 24" fill="currentColor" x="128" y="128" role="img" style="display:inline-block;vertical-align:middle" xmlns="http://www.w3.org/2000/svg"><g fill="currentColor"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 3C4.239 3 2 5.216 2 7.95c0 2.207.875 7.445 9.488 12.74a.985.985 0 0 0 1.024 0C21.125 15.395 22 10.157 22 7.95C22 5.216 19.761 3 17 3s-5 3-5 3s-2.239-3-5-3Z"/></g></svg></svg>
+                    </button><br>
+                    ${place.name}<br>
+                    ${place.direction}<br>`);
+                    //Evento para cuando se abre el popup 
+                    marker.on('popupopen', function () {
+                        setTimeout(() => {
+                            //Función que devulve una promesa que cuando se resulve devuelve lista favoritos
+                            getFavouriteRestaurants()
+                                .then((restaurants)=>{
+                                    restaurants.forEach((restaurant)=>{
+                                        //Si el restaurante actual de la lista esta en lista de favoritos
+                                        if(restaurant.id===place.id){
+                                            //Cambia el color del botón
+                                            let btnFavourite=document.querySelector(`[data-id='${place.id}']`);
+                                            btnFavourite.style="color:red; margin-left:-16px;"
+                                            //console.log(btnFavourite)
+                                        }
+                                    }); 
+                                });
+                            //Se buscan por id todos los iconos de favorito para añadirles evnto click
+                            let svgElements = document.getElementsByClassName('btn-favourite');
+                            for (let i = 0; i < svgElements.length; i++) {
+                                svgElements[i].addEventListener('click', function (event) {
+                                    const id=event.currentTarget.getAttribute('data-id');
+                                    //Si el usuario está registrado
+                                    if (logged_in===true){
+                                        //Se hace una petición fetch para añadir sitio a favoritos
+                                        fetch("favourites/"+id)
+                                            .then((res)=>{
+                                                let btnFavourite=document.querySelector(`[data-id='${place.id}']`);
+                                                btnFavourite.style="color:red; margin-left:-16px;"
+                                                console.log("añadido")})
+                                    }
+                                });
+                            }
+                        }, 0);
+                    });
+                }
+            });
+        }
+        // Llama a la función para agregar los marcadores al mapa
+        addMarkers(map, restaurants);
+
+         //Crea botón de punto de partida y fin de la ruta 
+         function createPointsRouteButton(label, container) {
+            let btn = L.DomUtil.create('button', '', container);
+            btn.setAttribute('type', 'button');
+            btn.innerHTML = label;
+            return btn;
+        }
+        let btnRouting = document.getElementById("btn-route");
+        btnRouting.addEventListener("click", handleRoutingButtonClick);
+        let routingControl = null;
+        //Gestiona los clics en el mapa para definir puntos de partida o final
+        //e: evento de clic con la longitud y latitud
+        function onMapClick(e) {
+            //Crea un contenedor con los botones de inico y fin
+            let container = L.DomUtil.create('div'),
+                startBtn = createPointsRouteButton('Start from this location', container),
+                destBtn = createPointsRouteButton('Go to this location', container);
+            //Popup con los botones
+            L.popup()
+                .setContent(container)
+                .setLatLng(e.latlng)
+                .openOn(map);
+            //Para manipular los puntos de la ruta
+            L.DomEvent.on(startBtn, 'click', function () {
+                //rotingControl:objeto de control de enrutamiento
+                //spliceWaypoints:método para modificar los puntos de la ruta
+                routingControl.spliceWaypoints(0, 1, e.latlng);
+                map.closePopup();
+            });
+            L.DomEvent.on(destBtn, 'click', function () {
+                routingControl.spliceWaypoints(routingControl.getWaypoints().length - 1, 1, e.latlng);
+                map.closePopup();
+            });
+        } 
+        
+        let isRoutingActive = false;
+        //Gestión del botón de enrutamiento
+        function handleRoutingButtonClick() {
+            isRoutingActive = !isRoutingActive;
+            if (isRoutingActive) {
+                //Cambia el color del botón según el estado de enrutamiento
+                btnRouting.style="color:#4CAF50";
+                routingControl = L.Routing.control({
+                    waypoints: [],
+                    routeWhileDragging: true
+                }).addTo(map);
+                //Se activa el evento clic
+                map.on('click', onMapClick);
+            } else {
+                btnRouting.style="color:initial"
+                map.removeControl(routingControl);
+                routingControl = null;
+                //Se desactiva el evento clic
+                map.off('click', onMapClick);
+            }
+        }
+       
+       //Recoge posicion actual del usuario usando nevigation.geolocation, objeto proporcionado por los navegadores que permite acceder a ubicación mediante geolocalización del dispositivo
+        navigator.geolocation.getCurrentPosition(position => {
+            map.setView([position.coords.latitude, position.coords.longitude], 15);
+        });
+
+        const showSavedDtaBtn = document.getElementById('btn-favourites');
+        //Gestiona la funcionalidad de mostrar restaurantes favoritos del usuario
+        showSavedDtaBtn.addEventListener('click', () => {
+            if (!logged_in) {
+                alert('You need to log in to check your favourites.');
+                return;
+            }
+            //Llama a función asíncrona ue devuelve una promesa con los favoritos
+            getFavouriteRestaurants()
+                .then((restaurants) => {
+                    //console.log(restaurants)
+                    let ul=document.getElementById("restaurants-list")
+                    //console.log(ul)
+                    ul.textContent="";
+                    restaurants.forEach(item=>{
+                        //Por cada sitio se crea un li y dos div para mostrar la información
+                        let li=document.createElement("li");
+                        let divName=document.createElement("div");
+                        li.classList.add("favourite-elemnt");
+                        let divAddress=document.createElement("div")
+                        divName.textContent=item.name;
+                        divName.classList.add("name-favourite-elemnt")
+                        divAddress.textContent=item.direction
+                        //li.textContent=item.name;
+                        li.appendChild(divName);
+                        li.appendChild(divAddress);
+                        ul.appendChild(li);
+                        //Se ñade un evento de clic a cada elemento li para que se centre en las coordenadas del sitio correspondiente
+                        li.addEventListener('click',()=>map.setView([item.latitude,item.longitude],40));
+                        //console.log(item)); 
+                    });
+                    let favouritesModal = new bootstrap.Modal(document.getElementById('favourites-modal'), {
+                    });
+                    favouritesModal.toggle();
+               });
+            });
+
+            function toggleDarkMode() {
+                let element = document.body;
+                element.classList.toggle("dark-mode");
+                // Toggle de la clase map-tiles
+                let mapContainer = document.getElementById('map');
+                mapContainer.classList.toggle("map-tiles");
+                console.log("hla")
+             }
+
+
+    </script>
+</body>
+
+</html>
