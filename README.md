@@ -86,7 +86,7 @@ git checkout -b nombre-rama.
 ~~~
 4. Realiza tus cambios:
 ~~~
-commit git commit -m 'Añadir nueva funcionalidad'.
+git commit -m 'Añadir nueva funcionalidad'.
 ~~~
 5. Sube la rama:
  ~~~
