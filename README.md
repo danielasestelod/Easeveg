@@ -2,12 +2,12 @@
 Esto es un proyecto de un mapa interactivo para localizar restaurantes veganos y vegetarianos. Este mapa permite a los usuarios visualizar fácilmente los sitios cercanos que ofrecen opciones veganas o vegetarianas, con características personalizables como favoritos, rutas y más.
   
 ## 🚀 Funcionalidades  
-Visualización de restaurantes: Los restaurantes aparecen distribuidos en el mapa mediante pines que marcan su ubicación exacta.
-Detalles de los sitios: Al hacer clic en un pin, se muestra el nombre del restaurante.
-Favoritos: Los usuarios logueados pueden marcar restaurantes como favoritos.
-Creación de rutas: Indica un punto de inicio y un destino para obtener una ruta detallada.
-Búsqueda por dirección: Encuentra una ubicación exacta en el mapa.
-Modos de vista: Alterna entre modo oscuro (dark mode) o vista normal.
+- Visualización de restaurantes: Los restaurantes aparecen distribuidos en el mapa mediante pines que marcan su ubicación exacta.  
+- Detalles de los sitios: Al hacer clic en un pin, se muestra el nombre del restaurante.  
+- Favoritos: Los usuarios logueados pueden marcar restaurantes como favoritos.  
+- Creación de rutas: Indica un punto de inicio y un destino para obtener una ruta detallada.
+- Búsqueda por dirección: Encuentra una ubicación exacta en el mapa.
+- Modos de vista: Alterna entre modo oscuro (dark mode) o vista normal.
 
   
 ## 🛠️ Tecnologías Utilizadas  
