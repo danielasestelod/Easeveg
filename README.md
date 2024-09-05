@@ -11,18 +11,8 @@ Esto es un proyecto de un mapa interactivo para localizar restaurantes veganos y
 
   
 ## 🛠️ Tecnologías Utilizadas  
-### Frontend:
-<img src="https://cdn-icons-png.flaticon.com/128/1051/1051277.png" alt="html"/>
-<img src="https://cdn-icons-png.flaticon.com/128/5968/5968242.png" alt="css"/>
-<img src="https://cdn-icons-png.flaticon.com/128/5968/5968292.png" alt="javascript"/>
-- Leaflet: Librería usada para la visualización del mapa, la adición de marcadores, la creación de rutas, y la búsqueda por dirección.
 
-### Backend:
-<img src="https://cdn-icons-png.flaticon.com/128/3098/3098090.png" alt="django"/>
-<img src="https://cdn-icons-png.flaticon.com/128/5968/5968313.png" alt="mysql"/>
-
-### Scraping:
-Se empleó scraping con Python para obtener datos de restaurantes veganos y vegetarianos en la comunidad de Galicia.
+[![JavaScript,HTML,CSS,Django,MySql,Selenium](https://skillicons.dev/icons?i=js,html,css,django,mysql,selenium)](https://skillicons.dev)
 
  
 ## 📚 Instalación y Configuración  
