@@ -27,12 +27,16 @@ pip install django mysqlclient
 ### Pasos para Instalar
 1. Clona el repositorio:
 ~~~
-git clone https://github.com/tuusuario/nombre-proyecto.git
+git clone https://github.com/danielasestelod/Easeveg.git
 ~~~
 ~~~
 cd nombre-proyecto
 ~~~
-2. Configura el entorno virtual:
+2. Instala virtualenv:
+~~~
+pip install virtualenv
+~~~
+3. Configura el entorno virtual:
 ~~~
 virtualenv venv
 ~~~
@@ -41,10 +45,10 @@ source venv/bin/activate   # En macOS/Linux
 venv\Scripts\activate      # En Windows
 ~~~
 
-3. Instala las dependencias del backend:
+4. Instala las dependencias del backend:
 
 
-4. Configura la base de datos en settings.py: Asegúrate de que el archivo settings.py tenga las credenciales correctas para tu base de datos MySQL:
+5. Configura la base de datos en settings.py: Asegúrate de que el archivo settings.py tenga las credenciales correctas para tu base de datos MySQL:
 ~~~
 DATABASES = {
     'default': {
@@ -57,16 +61,16 @@ DATABASES = {
     }
 }
 ~~~
-5. Aplica las migraciones:
+6. Aplica las migraciones:
 ~~~
 python manage.py migrate
 ~~~
-6. Ejecuta el servidor:
+7. Ejecuta el servidor:
 ~~~
 python manage.py runserver
 ~~~
 
-7. Accede a la aplicación: Abre tu navegador y ve a http://127.0.0.1:8000/ para interactuar con la aplicación.  
+8. Accede a la aplicación: Abre tu navegador y ve a http://127.0.0.1:8000/ para interactuar con la aplicación.  
 
 ## 🎨 La aplicación:  
 
@@ -82,11 +86,11 @@ Si deseas contribuir a este proyecto, por favor sigue los siguientes pasos:
 1. Haz un fork del repositorio.
 2. Crea una nueva rama:
 ~~~
-git checkout -b nombre-rama.
+git checkout -b nombre-rama
 ~~~
 4. Realiza tus cambios:
 ~~~
-git commit -m 'Añadir nueva funcionalidad'.
+git commit -m 'Añadir nueva funcionalidad'
 ~~~
 5. Sube la rama:
  ~~~
