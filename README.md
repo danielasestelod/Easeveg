@@ -20,7 +20,7 @@ Esto es un proyecto de un mapa interactivo para localizar restaurantes veganos y
 - Python 3^
 - Django
 - MySQL
-Librerías necesarias:
+- Librerías necesarias:
 ~~~
 pip install django mysqlclient
 ~~~
