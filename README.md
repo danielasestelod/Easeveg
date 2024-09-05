@@ -90,7 +90,7 @@ git commit -m 'Añadir nueva funcionalidad'.
 ~~~
 5. Sube la rama:
  ~~~
- git push origin nueva-funcionalidad
+ git push origin nombre-rama
  ~~~
 7. Haz un Pull Request.
 
